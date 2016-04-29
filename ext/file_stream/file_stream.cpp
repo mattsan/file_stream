@@ -16,7 +16,6 @@ struct Stream
 
     static Stream* open(const std::string& filename)
     {
-        std::cout << "open " << filename << std::endl;
         Stream* stream = new Stream;
         stream->source = new std::ifstream(filename);
         return stream;
@@ -26,20 +25,17 @@ struct Stream
     {
         delete stream->source;
         delete stream;
-        std::cout << "closed" << std::endl;
     }
 };
 
 VALUE file_stream_open(VALUE self, VALUE filename)
 {
-    std::cout << "OPEN" << std::endl;
     Stream* stream = Stream::open(StringValuePtr(filename));
     return Data_Wrap_Struct(self, 0, Stream::close, stream);
 }
 
 VALUE file_stream_close(VALUE self)
 {
-    std::cout << "CLOSE" << std::endl;
     return self;
 }
 
@@ -50,12 +46,10 @@ VALUE file_stream_readline(VALUE self)
     std::string s;
     if(std::getline(*stream->source, s).good())
     {
-        std::cout << "read " << s << std::endl;
         return rb_str_new2(s.c_str());
     }
     else
     {
-        std::cout << "no good" << std::endl;
         return Qnil;
     }
 }
